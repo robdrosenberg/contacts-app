@@ -15,4 +15,21 @@ class ContactsController < ApplicationController
     render json: contact.as_json
   end
 
+  def update
+    contact = Contact.find_by(id: params[:id])
+    contact.update(
+      first_name: params[:first_name],
+      last_name: params[:last_name],
+      phone_number: params[:phone_number],
+      email: params[:emmail]
+      )
+    render json: contact.as_json
+  end
+
+  def destroy
+    contact = Contact.find_by(id: params[:id])
+    contact.destroy
+    render json: {message: "Your contact has been deleted!"}
+  end
+
 end

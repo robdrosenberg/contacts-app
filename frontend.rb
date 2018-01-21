@@ -29,4 +29,6 @@ elsif user_choice == "3"
   params[:phone_number] = gets.chomp
   contact = Unirest.post("http://localhost:3000/contacts",parameters: params)
   puts JSON.pretty_generate(contact)
+elsif user_choice == "4"
+elsif user_choice == "5"
 end
