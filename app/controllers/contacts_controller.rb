@@ -2,6 +2,10 @@ class ContactsController < ApplicationController
 
   def index
     contacts = Contact.all
+    search = params[:search]
+    if search
+      contacts = contacts.where("first_name LIKE ? OR last_name LIKE ? OR email LIKE ?", "%#{search}%", "%#{search}%", "%#{search}%")
+    end
     render json: contacts.as_json
   end
 
@@ -11,7 +15,7 @@ class ContactsController < ApplicationController
   end
 
   def create
-    contact = Contact.create(
+    contact = Contact.new(
       first_name: params[:first_name],
       last_name: params[:last_name],
       middle_name: params[:middle_name],
@@ -19,20 +23,33 @@ class ContactsController < ApplicationController
       email: params[:email], 
       phone_number: params[:phone_number]
     )
-    render json: contact.as_json
+    if contact.save
+      render json: contact.as_json
+    else
+      render json: {
+        error: contact.errors.full_message, 
+        message: :unprocessable_entity}
+    end
   end
 
   def update
     contact = Contact.find_by(id: params[:id])
-    contact.update(
-      first_name: params[:first_name] || contact.first_name,
-      last_name: params[:last_name] || contact.last_name,
-      middle_name: params[:middle_name] || contact.middle_name,
-      bio: params[:bio] || contact.bio,
-      email: params[:emmail] || contact.email,
-      phone_number: params[:phone_number] || contact.phone_number
-      )
-    render json: contact.as_json
+    contact.first_name = params[:first_name] || contact.first_name
+
+    contact.last_name = params[:last_name] || contact.last_name
+
+    contact.middle_name = params[:middle_name] || contact.middle_name
+
+    contact.bio = params[:bio] || contact.bio
+    contact.email = params[:emmail] || contact.email
+    contact.phone_number = params[:phone_number] || contact.phone_number
+    if contact.save
+      render json: contact.as_json
+    else
+      render json: {
+        error: contact.errors.full_message, 
+        message: :unprocessable_entity}
+    end
   end
 
   def destroy

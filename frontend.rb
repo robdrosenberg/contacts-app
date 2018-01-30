@@ -2,6 +2,7 @@ require "unirest"
 
 puts "Enter an option number to continue"
 puts "[1] See all contacts"
+puts "[1.5] See contacts with certain name"
 puts "[2] See specific contact"
 puts "[3] Create a new contact"
 puts "[4] Update contact"
@@ -13,7 +14,13 @@ if user_choice == "1"
   response = Unirest.get("http://localhost:3000/contacts")
   contacts = response.body
   puts JSON.pretty_generate(contacts)
-
+elsif user_choice == "1.5"
+  params ={}
+  puts "Enter search term"
+  search = gets.chomp
+  response = Unirest.get("http://localhost:3000/contacts?search=#{search}")
+  contacts = response.body
+  puts JSON.pretty_generate(contacts)
 elsif user_choice == "2"
   puts "Enter the id of a contact you'd like to see"
   input_id = gets.chomp
