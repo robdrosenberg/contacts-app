@@ -1,11 +1,13 @@
 class ContactsController < ApplicationController
 
   def index
-    contacts = Contact.all
-    search = params[:search]
-    if search
-      contacts = contacts.where("first_name LIKE ? OR last_name LIKE ? OR email LIKE ?", "%#{search}%", "%#{search}%", "%#{search}%")
+    if current_user
+      contacts = current_user.contacts
     end
+    # search = params[:search]
+    # if search
+    #   contacts = contacts.where("first_name LIKE ? OR last_name LIKE ? OR email LIKE ?", "%#{search}%", "%#{search}%", "%#{search}%")
+    # end
     render json: contacts.as_json
   end
 
@@ -21,7 +23,8 @@ class ContactsController < ApplicationController
       middle_name: params[:middle_name],
       bio: params[:bio],
       email: params[:email], 
-      phone_number: params[:phone_number]
+      phone_number: params[:phone_number],
+      user_id: current_user.id
     )
     if contact.save
       render json: contact.as_json
@@ -57,5 +60,4 @@ class ContactsController < ApplicationController
     contact.destroy
     render json: {message: "Your contact has been deleted!"}
   end
-
 end
